@@ -1,60 +1,55 @@
+//check if there is a DEPENDENCY INJECTION
 const argv = require('yargs').argv
+const roshamboo = ['rock', 'paper', 'scissors']
 
 class Game {
-  constructor(roshamboo) {
-    this.roshamboo = roshamboo
+  constructor(player1, player2) {
+    this.player1 = player1
+    this.player2 = player2
   }
-  evaluate(userMove, computerMove) {
-    if(userMove && computerMove) {
-      if (userMove === 'rock' && computerMove === 'paper' ||
-          userMove === 'paper' && computerMove === 'scissors' ||
-          userMove === 'scissors' && computerMove === 'rock'
-          )
-          {
-            console.log('~Computer wins.~')
-          } else if (userMove === 'rock' && computerMove === 'rock' ||
-                    userMove === 'paper' && computerMove === 'paper' ||
-                    userMove === 'scissors' && computerMove === 'scissors'
-                    )
-                    {
-                      console.log('~ You are even.~')
-                    } else {
-                      console.log('~User wins.~')
-                    }
+  evaluate() {
+    let move1 = this.player1.getMove()
+    let move2 = this.player2.getMove()
+    console.log(this.player1.getName(), ':', move1)
+    console.log(this.player2.getName(), ':', move2)
+
+    if (move1 === 'rock' && move2 === 'paper' ||
+        move1 === 'paper' && move2 === 'scissors' ||
+        move1 === 'scissors' && move2 === 'rock')
+    {
+      console.log(`~${this.player2.getName()} wins.~`)
+    } else if (move1 === 'rock' && move2 === 'rock' ||
+               move1 === 'paper' && move2 === 'paper' ||
+               move1 === 'scissors' && move2 === 'scissors')
+    {
+      console.log('~ You are even.~')
+    } else {
+      console.log(`~${this.player1.getName()} wins.~`)
     }
   }
 }
 
-class ComputerMove extends Game {
-  constructor() {
-    super(roshamboo)
+class ComputerMove {
+  constructor() {}
+  getMove() {
+    return roshamboo[Math.floor(Math.random() * roshamboo.length)]
   }
-  setMove() {
-    return this.roshamboo[Math.floor(Math.random() * this.roshamboo.length)]
+  getName() {
+    return "Computer"
   }
 }
 
-class UserMove extends Game {
-  constructor() {
-    super(roshamboo)
+class UserMove {
+  constructor(value) {
+    this.value = value
   }
-  getMove(value) {
-    return value
+  getMove() {
+    return this.value
+  }
+  getName() {
+    return "User"
   }
 }
-const roshamboo = ['rock', 'paper', 'scissors']
 const userInput = argv.move
-console.log('userInput', argv.move)
-const game = new Game()
-const userMove = new UserMove()
-const computerMove = new ComputerMove()
-const input = userMove.getMove(userInput)
-const output = computerMove.setMove()
-console.log('input and output', input, output)
-game.evaluate(input, output)
-
-// if (argv.ships > 3 && argv.distance < 53.5) {
-//   console.log('Plunder more riffiwobbles!')
-// } else {
-//   console.log('Retreat from the xupptumblers!')
-// }
+const game = new Game(new UserMove(userInput), new ComputerMove())
+game.evaluate()
